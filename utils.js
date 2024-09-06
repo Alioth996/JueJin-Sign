@@ -38,7 +38,7 @@ const pushWechatMsg = async (message) => {
     const { point, curPonit, checkin } = message
     var data = JSON.stringify({
         "token": 'b4d00fe367fc4239847ca78b3ace8c80',
-        "title": "签到通知",
+        "title": "掘金签到通知",
         "content":
             `
             <p>签到状态: <span style="color: #1abc9c;">${checkin} √</span></p>

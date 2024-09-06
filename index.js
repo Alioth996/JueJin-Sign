@@ -1,7 +1,7 @@
 const puppeteer = require("puppeteer");
 const fs = require("fs");
-const { decodeQR, generateQRtoTerminal } = require("./utils");
-require('dotenv').config();
+const { decodeQR, generateQRtoTerminal, pushWechatMsg, getCurPoint } = require("./utils");
+// require('dotenv').config();
 const axios = require('axios');
 
 const DIR_PATH = "./config";
@@ -14,45 +14,47 @@ let errMsg = "";
 let checkin = "";
 let point = "-1";
 
-const QYWX_ROBOT = process.env.QYWX_ROBOT;
+// const QYWX_ROBOT = process.env.QYWX_ROBOT;
 
 if (!fs.existsSync(DIR_PATH)) {
     fs.mkdirSync(DIR_PATH);
 }
 
-if (!QYWX_ROBOT) {
-    console.log("未配置 企业微信群机器人webhook地址, 跳过推送");
-}
 
-const pushMsg = async (msg) => {
-    if (QYWX_ROBOT) {
-        try {
-            const response = await axios.post(
-                QYWX_ROBOT,
-                {
-                    msgtype: "text",
-                    text: {
-                        content: msg,
-                        mentioned_list: ['@all']
-                    }
-                },
-                {
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                }
-            );
 
-            if (response.data.errcode === 0) {
-                console.log("推送成功");
-            } else {
-                console.log("推送失败: ", response.data);
-            }
-        } catch (error) {
-            console.error("请求失败: ", error.message);
-        }
-    }
-};
+// if (!QYWX_ROBOT) {
+//     console.log("未配置 企业微信群机器人webhook地址, 跳过推送");
+// }
+
+// const pushMsg = async (msg) => {
+//     if (QYWX_ROBOT) {
+//         try {
+//             const response = await axios.post(
+//                 QYWX_ROBOT,
+//                 {
+//                     msgtype: "text",
+//                     text: {
+//                         content: msg,
+//                         mentioned_list: ['@all']
+//                     }
+//                 },
+//                 {
+//                     headers: {
+//                         'Content-Type': 'application/json'
+//                     }
+//                 }
+//             );
+
+//             if (response.data.errcode === 0) {
+//                 console.log("推送成功");
+//             } else {
+//                 console.log("推送失败: ", response.data);
+//             }
+//         } catch (error) {
+//             console.error("请求失败: ", error.message);
+//         }
+//     }
+// };
 
 const getRandomInt = (min, max) => {
     return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -226,7 +228,7 @@ const main = async () => {
                     console.log("已签到，无需重复签到");
                     alreadySignedIn = true;
                 } else {
-                    await page.waitForSelector(".code-calender .signin", { visible: true,timeout: 5000 });
+                    await page.waitForSelector(".code-calender .signin", { visible: true, timeout: 5000 });
                     const checkinButton = await page.$(".code-calender .signin");
 
                     if (checkinButton) {
@@ -271,7 +273,7 @@ const main = async () => {
                 const freeTextDiv = await page.$("#turntable-item-0 div.text-free");
                 if (freeTextDiv) {
                     await freeTextDiv.click();
-                    console.log("已点击抽奖按钮");
+                    console.log("已点击免费抽奖按钮");
                     freeDrawFound = true;
                 } else {
                     console.log("未找到可点击的免费抽奖按钮");
@@ -280,7 +282,7 @@ const main = async () => {
                 console.log("未找到可点击的免费抽奖按钮");
             }
 
-            if (!freeDrawFound&&!alreadySignedIn) {
+            if (!freeDrawFound && !alreadySignedIn) {
                 console.log(`未找到免费抽奖按钮，第${attempt}次重试签到`);
             }
         }
@@ -303,14 +305,15 @@ const main = async () => {
 
         msg = msg.replace("{checkin}", checkin).replace("{point}", point);
         console.log(msg);
-        await pushMsg(msg);
 
+        const { data } = await getCurPoint()
+        await pushWechatMsg({ checkin, point, curPonit: data });
         await browser.close();
     } catch (e) {
         const error = e;
         console.error(error);
         errMsg = error.message;
-        await pushMsg(`签到失败: ${errMsg}`);
+        await pushWechatMsg(`签到失败: ${errMsg}`);
         throw error;
     }
     console.log("本轮签到结束");

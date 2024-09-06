@@ -41,9 +41,9 @@ const pushWechatMsg = async (message) => {
         "title": "签到通知",
         "content":
             `
-            <p>签到状态: <span style="color: #1abc9c;">已签到 √</span></p>
-            <p> 获得矿石: <span style="color: #3498db;">1024</span></p>
-            <p> 矿石总数: <span style="color: #2c3e50;">6500</span></p>
+            <p>签到状态: <span style="color: #1abc9c;">${checkin} √</span></p>
+            <p> 获得矿石: <span style="color: #3498db;">${point}</span></p>
+            <p> 矿石总数: <span style="color: #2c3e50;">${curPonit}</span></p>
         `,
 
         "template": "html"

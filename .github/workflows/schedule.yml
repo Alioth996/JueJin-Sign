@@ -18,7 +18,7 @@ jobs:
     - name: 设置 Node.js 环境
       uses: actions/setup-node@v3
       with:
-        node-version: '18' # 使用 Node.js 18 版本
+        node-version: '20.13.0' # 使用 Node.js 18 版本
 
     - name: 安装依赖并执行签到脚本
       run: |

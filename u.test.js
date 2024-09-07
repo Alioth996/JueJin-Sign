@@ -1,4 +1,8 @@
-const { decodeQR, generateQRtoTerminal, pushWechatMsg, getCurPoint } = require("./utils");
-const data = getCurPoint()
+const { decodeQR, generateQRtoTerminal, pushWechatMsg, getCurPoint, getRandomTime } = require("./utils");
+// const data = getCurPoint()
 
-data.then(data => console.log(data))
+// data.then(data => console.log(data))
+
+const time = getRandomTime()
+
+console.log(time)

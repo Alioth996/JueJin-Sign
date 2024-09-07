@@ -35,15 +35,16 @@ const generateQRtoTerminal = (text) => {
 
 
 const pushWechatMsg = (message) => {
-    const { point, curPonit, checkin } = message
+    const { point, curPonit, checkin, userName } = message
     var data = JSON.stringify({
         "token": 'b4d00fe367fc4239847ca78b3ace8c80',
         "title": "掘金签到通知",
         "content":
             `
             <p>签到状态: <span style="color: #1abc9c;">${checkin} √</span></p>
-            <p> 获得矿石: <span style="color: #3498db;">${point}</span></p>
-            <p> 矿石总数: <span style="color: #2c3e50;">${curPonit}</span></p>
+            <p>掘金账号: <span style="color: #2d3436;">${userName}</span></p>
+            <p>获得矿石: <span style="color: #3498db;">${point}</span></p>
+            <p>矿石总数: <span style="color: #2c3e50;">${curPonit}</span></p>
         `,
 
         "template": "html"
@@ -87,10 +88,26 @@ const getCurPoint = async () => {
     return res.data
 }
 
+function getRandomTime() {
+    // 生成随机的小时、分钟和秒
+    let hours = Math.floor(Math.random() * 24);
+    let minutes = Math.floor(Math.random() * 60);
+    let seconds = Math.floor(Math.random() * 60);
+
+    // 将它们格式化为两位数的字符串
+    hours = hours.toString().padStart(2, '0');
+    minutes = minutes.toString().padStart(2, '0');
+    seconds = seconds.toString().padStart(2, '0');
+
+    return `${hours}:${minutes}:${seconds}`;
+}
+
+
 
 module.exports = {
     decodeQR,
     generateQRtoTerminal,
     pushWechatMsg,
-    getCurPoint
+    getCurPoint,
+    getRandomTime
 };

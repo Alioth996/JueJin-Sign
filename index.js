@@ -213,6 +213,7 @@ const main = async () => {
         let attempt = 0;
         let freeDrawFound = false;
         let alreadySignedIn = false; //判断是否已签到
+        let userName = null;
 
         while (attempt < maxRetries && !freeDrawFound && !alreadySignedIn) {
             attempt += 1;
@@ -224,6 +225,8 @@ const main = async () => {
             await delay(7000);
             try {
                 const signedinButton = await page.$(".code-calender .signedin");
+                userName = await page.$eval(".user-info .name", el => el.innerHTML);
+
                 if (signedinButton) {
                     console.log("已签到，无需重复签到");
                     alreadySignedIn = true;
@@ -307,7 +310,7 @@ const main = async () => {
         console.log(msg);
 
         const { data } = await getCurPoint()
-        await pushWechatMsg({ checkin, point, curPonit: data });
+        await pushWechatMsg({ checkin, point, curPonit: data, userName });
         await browser.close();
     } catch (e) {
         const error = e;

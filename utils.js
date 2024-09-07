@@ -34,7 +34,7 @@ const generateQRtoTerminal = (text) => {
 };
 
 
-const pushWechatMsg = async (message) => {
+const pushWechatMsg = (message) => {
     const { point, curPonit, checkin } = message
     var data = JSON.stringify({
         "token": 'b4d00fe367fc4239847ca78b3ace8c80',

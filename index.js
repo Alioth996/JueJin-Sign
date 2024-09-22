@@ -309,8 +309,14 @@ const main = async () => {
         msg = msg.replace("{checkin}", checkin).replace("{point}", point);
         console.log(msg);
 
-        const { data } = await getCurPoint()
-        await pushWechatMsg({ checkin, point, curPonit: data, userName });
+        const { data: curPonit } = await getCurPoint()
+        const { data: successId, code } = await pushWechatMsg({ checkin, point, curPonit, userName });
+
+        if (successId && code === 200) {
+            console.log(`签到成功，微信推送消息已发送, 请查收`);
+        } else {
+            console.log(`签到成功，但微信推送消息发送失败`);
+        }
         await browser.close();
     } catch (e) {
         const error = e;

@@ -4,6 +4,9 @@ const QRCode = require("qrcode");
 const axios = require('axios');
 
 
+require('dotenv').config();
+
+
 // 解析二维码
 const decodeQR = async (path) => {
     const image = await Jimp.read(path);
@@ -33,11 +36,11 @@ const generateQRtoTerminal = (text) => {
     );
 };
 
-
+// 第三方接口限制  5次/分钟 相同消息 3条/小时
 const pushWechatMsg = (message) => {
     const { point, curPonit, checkin, userName } = message
     var data = JSON.stringify({
-        "token": 'b4d00fe367fc4239847ca78b3ace8c80',
+        "token": process.env.PushPulsToken || 'b4d00fe367fc4239847ca78b3ace8c80',
         "title": "掘金签到通知",
         "content":
             `
@@ -60,17 +63,17 @@ const pushWechatMsg = (message) => {
         data: data
     };
 
-    axios(config)
-        .then(function (response) {
-            if (response.code === 200 && response.data) {
-                console.log("微信推送成功");
-            }
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
-}
+    return new Promise((resolve, reject) => {
+        axios(config)
+            .then(function (response) {
+                resolve(response.data)
+            })
+            .catch(function (error) {
+                reject(error)
+            });
+    })
 
+}
 const getCurPoint = async () => {
     var config = {
         method: 'get',

@@ -7,9 +7,12 @@
   首次运行需要扫码登录 之后每天早上七点自动执行签到任务
 2. 搭配`github action`
    需要本地先运行一次扫码登录后推送代码 然后就可以执行action操作了 设置了每天早上7点执行
-3. 配置企业微信群机器人推送消息
-   `QYWX_ROBOT` Settings action secrets新增QYWX_ROBOT 值就是你机器人的webhook地址
-   [配置文档](https://developer.work.weixin.qq.com/document/path/91770)
+3. ~~配置企业微信群机器人推送消息~~
+   ~~`QYWX_ROBOT` Settings action secrets新增QYWX_ROBOT 值就是你机器人的webhook地址~~
+   ~~[配置文档](https://developer.work.weixin.qq.com/document/path/91770)~~
+4. 配置PushPlus第三方微信消息推送服务
+   在.env文件中填写你申请的`PushPulsToken`
+   [pushplus官网](https://www.pushplus.plus/)
 
 ## 本地运行（请用PowerShell或者git bash运行）
 **cmd直接运行会报错**

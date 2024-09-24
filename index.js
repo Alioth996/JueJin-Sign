@@ -136,7 +136,7 @@ const main = async () => {
         });
 
         const page = await browser.newPage();
-        page.setDefaultTimeout(1000 * 60 * 5);
+        page.setDefaultTimeout(1000 * 60 * 6);
 
         await page.setUserAgent(
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36"
@@ -319,11 +319,20 @@ const main = async () => {
         }
         await browser.close();
     } catch (e) {
+
+        // 重新签到
+        let timer = setTimeout(() => {
+            console.log("签到失败, 5秒后重新尝试签到");
+            clearTimeout(timer)
+            timer = null
+            main();
+        }, 5000)
+
         const error = e;
         console.error(error);
         errMsg = error.message;
         await pushWechatMsg(`签到失败: ${errMsg}`);
-        throw error;
+
     }
     console.log("本轮签到结束");
 };

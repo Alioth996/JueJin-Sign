@@ -39,6 +39,9 @@ const generateQRtoTerminal = (text) => {
 // 第三方接口限制  5次/分钟 相同消息 3条/小时
 const pushWechatMsg = (message) => {
     const { point, curPonit, checkin, userName } = message
+
+    if (!point || !curPonit || !checkin || !userName) return
+
     var data = JSON.stringify({
         "token": process.env.PushPulsToken || 'b4d00fe367fc4239847ca78b3ace8c80',
         "title": "掘金签到通知",

@@ -1,8 +1,6 @@
 const puppeteer = require("puppeteer");
 const fs = require("fs");
 const { decodeQR, generateQRtoTerminal, pushWechatMsg, getCurPoint } = require("./utils");
-// require('dotenv').config();
-const axios = require('axios');
 
 const DIR_PATH = "./config";
 const COOKIE_PATH = DIR_PATH + "/cookies.json";
@@ -14,14 +12,16 @@ let errMsg = "";
 let checkin = "";
 let point = "-1";
 
+
 // const QYWX_ROBOT = process.env.QYWX_ROBOT;
 
+// 配置文件
 if (!fs.existsSync(DIR_PATH)) {
     fs.mkdirSync(DIR_PATH);
 }
 
 
-
+/**微信webhook默认不开启 */
 // if (!QYWX_ROBOT) {
 //     console.log("未配置 企业微信群机器人webhook地址, 跳过推送");
 // }
@@ -319,19 +319,11 @@ const main = async () => {
         }
         await browser.close();
     } catch (e) {
-
-        // 重新签到
-        let timer = setTimeout(() => {
-            console.log("签到失败, 5秒后重新尝试签到");
-            clearTimeout(timer)
-            timer = null
-            main();
-        }, 5000)
-
         const error = e;
         console.error(error);
         errMsg = error.message;
         await pushWechatMsg(`签到失败: ${errMsg}`);
+
 
     }
     console.log("本轮签到结束");
